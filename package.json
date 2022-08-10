@@ -4,21 +4,39 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "rm -rf ./dist && tsc",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "rm -rf ./dist && tsc",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "lint": "eslint \"**/*.{js,ts}\" --quiet",
-    "lint:fix": "eslint \"**/*.{js,ts}\" --fix"
+    "lint:fix": "eslint \"**/*.{js,ts}\" --fix",
+    "kill": "sudo kill -9 `sudo lsof -t -i:5432`",
+    "compose:db-up": "sudo docker-compose -f docker-compose.db.yaml up -d",
+    "compose:db-down": "sudo docker-compose -f docker-compose.db.yaml down --volumes",
+    "compose:up": "sudo docker-compose up -d",
+    "compose:down": "sudo docker-compose down --volumes",
+    "docker:build": "echo \"Publishes the docker image from Dockerfile on contaniner registry\" && docker build -t sih-backend .",
+    "list:containers": "sudo docker ps",
+    "list:images": "sudo docker images",
+    "prisma:generate": "echo \"Generates and install @prisma/client- NOT REQUIRED if using prisma:migrate\" && npx prisma generate",
+    "prisma:db-push": "echo \"Applies schema directly to the database - USED IN DEVELOPMENT as an alternative to prisma:migrate\" && npx prisma",
+    "prisma:migrate": "echo \"Create migrations from your Prisma schema, apply them to the database, generate @prisma/client - A NEW VERSION WILL BE CREATED - PREVENTS DATA LOSS UNLIKE db:push - USED after all the changes are on a relative stable state using db:push\" && npx prisma migrate dev --name \"init\"",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "prisma:studio": "npx prisma studio",
+    "db:init": "npm run prisma:migrate && npm run prisma:deploy",
+    "db:reset": "npx prisma migrate reset"
   },
   "keywords": [],
   "author": "ishubham21",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "helmet": "^5.1.1"
+    "helmet": "^5.1.1",
+    "http-errors": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -39,6 +57,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-no-loops": "^0.3.0",
     "jest": "^28.1.3",
+    "prisma": "^4.2.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   }

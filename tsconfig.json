@@ -8,9 +8,10 @@
     "target": "es6",
     "skipLibCheck": true,
     "strict": true,
-    "removeComments": true
+    "removeComments": true,
+    "sourceMap": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "tests/index.test.ts"],
   "exclude": [
     "./node_modules",
     "tests",

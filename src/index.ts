@@ -1,2 +1,4 @@
-// eslint-disable-next-line no-console
-console.log("Hello");
+import App from "./app";
+const app = new App();
+
+app.listen();

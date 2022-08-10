@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Parent {
+  id        String   @id @default(uuid())
+  email     String   @unique @db.VarChar(256)
+  name      String   @db.VarChar(256)
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  children  Child[]
+}
+
+model Child {
+  id     String @id @default(uuid())
+  name   String @db.VarChar(256)
+  gender Gender
+  coins  Int    @default(0)
+  // ageGroup AgeGroup
+
+  //--relations--
+  Parent   Parent @relation(fields: [parentId], references: [id])
+  parentId String
+}
+
+model CognitiveTasks {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(256)
+  description String?
+  questions   Json
+  // ageGroup AgeGroup
+}
+
+
+
+enum Gender {
+  Male
+  Female
+  Other
+}

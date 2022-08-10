@@ -1,0 +1,62 @@
+# I will use this file only in the proudction for deployment
+# I might not use it whatsoever if I don't find a good place to host it lol
+
+# To summaize: Create a DB (postgres image) service -> Create Migrations on the Database (if any, but yet an important step just in case the migration has changed or something) -> Pick the configurations from Dockerfile and run the server on the specified port
+
+version: "3"
+services:
+  server:
+    build:
+      #make use of Dockerfile
+      context: .
+      args:
+        NPM_LOG_LEVEL: notice
+    ports:
+      - "${SERVER_PORT}:4000"
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
+      # BCRYPT_SALT: "${BCRYPT_SALT}"
+      # JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
+      # JWT_EXPIRATION: "${JWT_EXPIRATION}"
+    depends_on:
+      - migration
+
+  migration:
+    build:
+      context: .
+      args:
+        NPM_LOG_LEVEL: notice
+    command: npm run db:init
+    working_dir: /app/server
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
+      # BCRYPT_SALT: "${BCRYPT_SALT}" 
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  #Same service as docker-compose.db.yaml - docker-compose.db.yaml is for someone who doesn't want to use this docker-compose.yaml for building
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      ports: ${POSTGRESQL_PORT}:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-q",
+          "-d",
+          "${POSTGRESQL_DB_NAME}",
+          "-U",
+          "${POSTGRESQL_USER}",
+        ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+volumes:
+  postgres: ~
