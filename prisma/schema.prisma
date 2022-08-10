@@ -38,6 +38,8 @@ model Child {
   // --fields related to yoga table
   assignedYogaOnChild       assignedYogaOnChild[]
   completedYogaOnChild      completedYogaOnChild[]
+
+  //--show tasks available--
   availableCognitiveOnChild availableCognitiveOnChild[]
   availableYogaOnChild      availableYogaOnChild[]
 }

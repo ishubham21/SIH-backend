@@ -9,4 +9,5 @@ export const {
   POSTGRESQL_PORT,
   DATABASE_URL,
   SHADOW_DATABASE_URL,
+  JWT_ACCESS_TOKEN_SECRET
 } = process.env;
