@@ -21,26 +21,146 @@ model Parent {
 }
 
 model Child {
-  id     String @id @default(uuid())
-  name   String @db.VarChar(256)
-  gender Gender
-  coins  Int    @default(0)
-  // ageGroup AgeGroup
+  id       String   @id @default(uuid())
+  name     String   @db.VarChar(256)
+  gender   Gender
+  coins    Int      @default(0)
+  ageGroup AgeGroup
 
-  //--relations--
+  // --relations--
   Parent   Parent @relation(fields: [parentId], references: [id])
   parentId String
+
+  // --fields related to task table--
+  assignedCognitiveOnChild  assignedCognitiveOnChild[]
+  completedCognitiveOnChild completedCognitiveOnChild[]
+
+  // --fields related to yoga table
+  assignedYogaOnChild       assignedYogaOnChild[]
+  completedYogaOnChild      completedYogaOnChild[]
+  availableCognitiveOnChild availableCognitiveOnChild[]
+  availableYogaOnChild      availableYogaOnChild[]
 }
 
-model CognitiveTasks {
-  id          Int     @id @default(autoincrement())
-  name        String  @db.VarChar(256)
+model CognitiveTask {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(256)
   description String?
   questions   Json
-  // ageGroup AgeGroup
+  ageGroup    AgeGroup
+
+  // --relations--
+  assignedCognitiveOnChild  assignedCognitiveOnChild[]
+  completedCognitiveOnChild completedCognitiveOnChild[]
+  availableCognitiveOnChild availableCognitiveOnChild[]
 }
 
+model Yoga {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(256)
+  description String?
+  modelLink   String
+  youtubeLink String
+  ageGroup    AgeGroup
 
+  // --relations--
+  assignedYogaOnChild  assignedYogaOnChild[]
+  completedYogaOnChild completedYogaOnChild[]
+  availableYogaOnChild availableYogaOnChild[]
+}
+
+model Games {
+  id       Int      @id @default(autoincrement())
+  name     String
+  link     String?
+  ageGroup AgeGroup
+}
+
+// ----joins---- //
+// -- Cognitive Tasks + Child table --
+model assignedCognitiveOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  task            CognitiveTask @relation(fields: [cognitiveTaskId], references: [id])
+  cognitiveTaskId Int
+
+  //multi-field primary key - ensures that each child can be associated to an assignedTask only once 
+  @@id([childId, cognitiveTaskId])
+}
+
+model completedCognitiveOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  task            CognitiveTask @relation(fields: [cognitiveTaskId], references: [id])
+  cognitiveTaskId Int
+
+  //multi-field primary key - ensures that each child can be associated to an assignedTask only once 
+  @@id([childId, cognitiveTaskId])
+}
+
+model availableCognitiveOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  task            CognitiveTask @relation(fields: [cognitiveTaskId], references: [id])
+  cognitiveTaskId Int
+
+  //multi-field primary key - ensures that each child can be associated to an assignedTask only once 
+  @@id([childId, cognitiveTaskId])
+}
+
+// -- Yoga + Chhild tables
+model assignedYogaOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  yoga   Yoga @relation(fields: [yogaId], references: [id])
+  yogaId Int
+
+  @@id([childId, yogaId])
+}
+
+model completedYogaOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  yoga   Yoga @relation(fields: [yogaId], references: [id])
+  yogaId Int
+
+  @@id([childId, yogaId])
+}
+
+model availableYogaOnChild {
+  createdAt DateTime @default(now())
+
+  child   Child  @relation(fields: [childId], references: [id])
+  childId String
+
+  yoga   Yoga @relation(fields: [yogaId], references: [id])
+  yogaId Int
+
+  @@id([childId, yogaId])
+}
+
+// ----enums---- //
+
+enum AgeGroup {
+  Toddler
+  Tween
+  Teen
+}
 
 enum Gender {
   Male
