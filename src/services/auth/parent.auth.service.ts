@@ -1,11 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+import { Parent, PrismaClient } from "@prisma/client";
 import { ParentLogin, ParentRegister } from "../../interfaces";
+import { compare, hash } from "bcrypt";
+import JWTService from "../jwt.service";
+import { genSalt } from "bcryptjs";
 
 class ParentAuthService {
   private parent;
+  private jwtService;
 
   constructor() {
     this.parent = new PrismaClient().parent;
+    this.jwtService = new JWTService();
   }
 
   private isParentPresent = async (
@@ -30,8 +35,22 @@ class ParentAuthService {
     });
   };
 
+  private encryptPassword = async (password: string) => {
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password, salt);
+    return hashedPassword;
+  };
+
+  private comparePassword = (
+    userPassword: string,
+    dbPassword: string,
+  ) => {
+    return compare(userPassword, dbPassword);
+  };
+
   public register = async (data: ParentRegister): Promise<string> => {
     const { email } = data;
+    data.password = await this.encryptPassword(data.password);
 
     return new Promise<string>((resolve, reject) => {
       this.isParentPresent(email)
@@ -56,13 +75,34 @@ class ParentAuthService {
         .then(async (foundParent: boolean) => {
           if (foundParent) {
             //get parent data
+            const parentData: Parent = (await this.parent.findUnique({
+              where: {
+                email,
+              },
+            })) as Parent;
+
             //validate password
-
-            //sign a JWT
-
-            //send JWT as an response
+            if (
+              await this.comparePassword(
+                data.password,
+                parentData.password,
+              )
+            ) {
+              //sign a JWT of this parentData
+              try {
+                const token = await this.jwtService.signAccessToken(
+                  parentData,
+                );
+                return resolve(token as string);
+              } catch (err) {
+                //jwt errors
+                reject(err);
+              }
+            } else {
+              return reject("Password is not valid");
+            }
           }
-          return reject("Email is already registered");
+          return reject("Email can not be found");
         })
         .catch((err) => reject(err));
     });

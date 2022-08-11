@@ -2,7 +2,6 @@ import express, { Application } from "express";
 import cors from "cors";
 import { NODE_ENV, SERVER_PORT } from "./config";
 import ParentAuthController from "./controllers/auth/parent.auth.controller";
-import { ParentInterface } from "./interfaces";
 
 class App {
   /**
@@ -23,19 +22,13 @@ class App {
 
     this.parentAuthController = new ParentAuthController();
 
-    // const parent: ParentInterface = {
-    //   name: "Shbhaaaam",
-    //   email: "ishubham2101@gmail.com",
-    //   password: "hellosss",
-    // };
-
     this.initializeMiddlewares();
     this.app.get("/", (req, res) => {
       res.send("The API is up and running");
     });
 
     this.app.post("/", (req, res) => {
-      this.parentAuthController.register(req, res);
+      this.parentAuthController.login(req, res);
     });
   }
 

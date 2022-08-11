@@ -14,7 +14,7 @@ model Parent {
   id        String   @id @default(uuid())
   email     String   @unique @db.VarChar(256)
   name      String   @db.VarChar(256)
-  password  String
+  password  String   @db.VarChar(256)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   children  Child[]
@@ -36,8 +36,8 @@ model Child {
   completedCognitiveOnChild completedCognitiveOnChild[]
 
   // --fields related to yoga table
-  assignedYogaOnChild       assignedYogaOnChild[]
-  completedYogaOnChild      completedYogaOnChild[]
+  assignedYogaOnChild  assignedYogaOnChild[]
+  completedYogaOnChild completedYogaOnChild[]
 
   //--show tasks available--
   availableCognitiveOnChild availableCognitiveOnChild[]

@@ -1,8 +1,7 @@
 import ParentAuthService from "../../services/auth/parent.auth.service";
 import { Request, Response } from "express";
-import { ParentRegister } from "../../interfaces";
+import { ParentLogin, ParentRegister } from "../../interfaces";
 import Joi, { ValidationResult, ValidationError } from "joi";
-import Bcrypt from "bcryptjs";
 
 class ParentAuthController {
   private authService;
@@ -11,7 +10,7 @@ class ParentAuthController {
     this.authService = new ParentAuthService();
   }
 
-  private validateParent = (
+  private validateRegistrationData = (
     parentData: ParentRegister,
   ): ValidationResult => {
     const schema = Joi.object({
@@ -23,27 +22,25 @@ class ParentAuthController {
     return schema.validate(parentData);
   };
 
-  private encryptPassword = (password: string) => {
-    return Bcrypt.hashSync(password, 10);
-  };
+  private validateLoginData = (parentData: ParentLogin) => {
+    const schema = Joi.object({
+      email: Joi.string().email().required(),
+      password: Joi.string().min(6).max(256).required(),
+    });
 
-  // private decryptPassword = (password: string) => {
-  //   return Bcrypt.compareSync
-  // }
+    return schema.validate(parentData);
+  };
 
   public register = async (req: Request, res: Response) => {
     //validate input here and sanitize it
-    const parentData: ParentRegister = req.body;
-    const validationError: ValidationError | undefined =
-      this.validateParent(parentData).error;
+    const parentRegister: ParentRegister = req.body;
+    const validationError: ValidationError | null | undefined =
+      this.validateRegistrationData(parentRegister).error;
 
     if (!validationError) {
       try {
-        parentData.password = this.encryptPassword(
-          parentData.password,
-        );
         const parentID: string = await this.authService.register(
-          parentData,
+          parentRegister,
         );
 
         return res.status(201).json({
@@ -55,6 +52,41 @@ class ParentAuthController {
       } catch (error) {
         //server error
         return res.status(501).json({
+          error,
+          data: null,
+        });
+      }
+    } else {
+      //body validation failed
+      res.status(403).json({
+        error: validationError.message,
+        data: null,
+      });
+    }
+  };
+
+  public login = async (req: Request, res: Response) => {
+    const parentLogin: ParentLogin = req.body;
+    const validationError: ValidationError | null | undefined =
+      this.validateLoginData(parentLogin).error;
+
+    if (!validationError) {
+      //call auth login service
+      try {
+        const token: string = await this.authService.login(
+          parentLogin,
+        );
+
+        //success
+        return res.status(201).json({
+          error: null,
+          data: {
+            token,
+          },
+        });
+      } catch (error) {
+        //server error
+        return res.status(403 | 501).json({
           error,
           data: null,
         });

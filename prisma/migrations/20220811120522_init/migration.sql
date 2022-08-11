@@ -9,7 +9,7 @@ CREATE TABLE "Parent" (
     "id" TEXT NOT NULL,
     "email" VARCHAR(256) NOT NULL,
     "name" VARCHAR(256) NOT NULL,
-    "password" TEXT NOT NULL,
+    "password" VARCHAR(256) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
