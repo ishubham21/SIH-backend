@@ -99,6 +99,21 @@ class ParentAuthController {
       });
     }
   };
+
+  public getParentData = async (req: Request, res: Response) => {
+    try {
+      //get it from the request - attach parent data in the reuqest using iddleware
+      return res.status(201).json({
+        error: null,
+        data: res.locals.parentData,
+      });
+    } catch (error) {
+      return res.status(504).json({
+        error:
+          "Some server error occured and parent data can not be retrieved",
+      });
+    }
+  };
 }
 
 export default ParentAuthController;

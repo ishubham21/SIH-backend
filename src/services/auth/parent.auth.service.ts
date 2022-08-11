@@ -90,8 +90,11 @@ class ParentAuthService {
             ) {
               //sign a JWT of this parentData
               try {
+                //removing password before signing the access token
+                const { password, ...parentDataToBeSigned } =
+                  parentData;
                 const token = await this.jwtService.signAccessToken(
-                  parentData,
+                  parentDataToBeSigned,
                 );
                 return resolve(token as string);
               } catch (err) {

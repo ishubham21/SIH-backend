@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import { NODE_ENV, SERVER_PORT } from "./config";
-import ParentAuthController from "./controllers/auth/parent.auth.controller";
+import ParentAuthRoute from "./routes/auth/parent.auth.route";
 
 class App {
   /**
@@ -10,7 +10,7 @@ class App {
   public app: Application;
   public env: string;
   public port: string | number;
-  private parentAuthController;
+  public parentAuthRoute = new ParentAuthRoute();
 
   constructor() {
     /**
@@ -20,15 +20,19 @@ class App {
     this.env = NODE_ENV || "development";
     this.port = SERVER_PORT || 4000;
 
-    this.parentAuthController = new ParentAuthController();
-
+    /**
+     * Up the middlewares
+     */
     this.initializeMiddlewares();
-    this.app.get("/", (req, res) => {
-      res.send("The API is up and running");
-    });
+    this.app.use("/parent", this.parentAuthRoute.router);
 
-    this.app.post("/", (req, res) => {
-      this.parentAuthController.login(req, res);
+    this.app.get("/", (req, res) => {
+      res.status(200).json({
+        error: null,
+        data: {
+          server: "Base-Healthy",
+        },
+      });
     });
   }
 
