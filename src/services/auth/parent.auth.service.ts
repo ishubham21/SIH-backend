@@ -1,5 +1,5 @@
-import { Parent, PrismaClient } from "@prisma/client";
-import { ParentInterface } from "../../interfaces";
+import { PrismaClient } from "@prisma/client";
+import { ParentLogin, ParentRegister } from "../../interfaces";
 
 class ParentAuthService {
   private parent;
@@ -30,10 +30,7 @@ class ParentAuthService {
     });
   };
 
-  public register = async (
-    data: ParentInterface,
-  ): Promise<string> => {
-    //
+  public register = async (data: ParentRegister): Promise<string> => {
     const { email } = data;
 
     return new Promise<string>((resolve, reject) => {
@@ -51,7 +48,25 @@ class ParentAuthService {
     });
   };
 
-  // public login
+  public login = async (data: ParentLogin) => {
+    const { email } = data;
+
+    return new Promise<string>((resolve, reject) => {
+      this.isParentPresent(email)
+        .then(async (foundParent: boolean) => {
+          if (foundParent) {
+            //get parent data
+            //validate password
+
+            //sign a JWT
+
+            //send JWT as an response
+          }
+          return reject("Email is already registered");
+        })
+        .catch((err) => reject(err));
+    });
+  };
 }
 
 export default ParentAuthService;
