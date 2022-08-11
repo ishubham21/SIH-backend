@@ -1,5 +1,4 @@
 import jsonwebtoken, { JsonWebTokenError } from "jsonwebtoken";
-import createHttpError from "http-errors";
 import { JWT_ACCESS_TOKEN_SECRET } from "./../config";
 import { ParentInterface, ChildInterface } from "../interfaces";
 
@@ -41,15 +40,7 @@ class JWT {
     >((resolve, reject) => {
       jsonwebtoken.verify(token, this.jwtSecret, (err, payload) => {
         if (err) {
-          const errorMessage: string =
-            err.name == "JsonWebTokenError"
-              ? "Unauthorized"
-              : err.message;
-
-          return reject(
-            // new createHttpError.Unauthorized(errorMessage),
-            err as JsonWebTokenError,
-          );
+          return reject(err as JsonWebTokenError);
         }
 
         resolve(payload as ParentInterface | ChildInterface);
