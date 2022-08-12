@@ -26,11 +26,6 @@ export interface ParentRegister {
   password: string;
 }
 
-export interface ParentLogin {
-  email: string;
-  password: string;
-}
-
 export interface RequestWithParent extends Request {
   parentData: Parent;
 }

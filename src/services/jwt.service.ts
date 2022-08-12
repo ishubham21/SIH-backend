@@ -1,4 +1,7 @@
-import jsonwebtoken, { JsonWebTokenError } from "jsonwebtoken";
+import jsonwebtoken, {
+  JsonWebTokenError,
+  JwtPayload,
+} from "jsonwebtoken";
 import { JWT_ACCESS_TOKEN_SECRET } from "./../config";
 import { Child } from "@prisma/client";
 import { ParentWithoutPassword } from "../interfaces";
@@ -31,18 +34,14 @@ class JWTService {
     );
   };
 
-  public verifyAccessToken = (
-    token: string,
-  ): Promise<ParentWithoutPassword | Child[] | JsonWebTokenError> => {
-    return new Promise<
-      ParentWithoutPassword | Child[] | JsonWebTokenError
-    >((resolve, reject) => {
+  public verifyAccessToken = (token: string): Promise<JwtPayload> => {
+    return new Promise<JwtPayload>((resolve, reject) => {
       jsonwebtoken.verify(token, this.jwtSecret, (err, payload) => {
         if (err) {
           return reject(err as JsonWebTokenError);
         }
 
-        resolve(payload as ParentWithoutPassword | Child[]);
+        resolve(payload as JwtPayload);
       });
     });
   };

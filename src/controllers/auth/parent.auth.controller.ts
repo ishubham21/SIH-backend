@@ -1,6 +1,6 @@
 import ParentAuthService from "../../services/auth/parent.auth.service";
 import { Request, Response } from "express";
-import { ParentLogin, ParentRegister } from "../../interfaces";
+import { LoginBody, ParentRegister } from "../../interfaces";
 import Joi, { ValidationResult, ValidationError } from "joi";
 
 class ParentAuthController {
@@ -22,7 +22,7 @@ class ParentAuthController {
     return schema.validate(parentData);
   };
 
-  private validateLoginData = (parentData: ParentLogin) => {
+  private validateLoginData = (parentData: LoginBody) => {
     const schema = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().min(6).max(256).required(),
@@ -66,7 +66,7 @@ class ParentAuthController {
   };
 
   public login = async (req: Request, res: Response) => {
-    const parentLogin: ParentLogin = req.body;
+    const parentLogin: LoginBody = req.body;
     const validationError: ValidationError | null | undefined =
       this.validateLoginData(parentLogin).error;
 
@@ -105,7 +105,7 @@ class ParentAuthController {
       //get it from the request - attach parent data in the reuqest using iddleware
       return res.status(201).json({
         error: null,
-        data: res.locals.parentData,
+        data: res.locals.data,
       });
     } catch (error) {
       return res.status(504).json({

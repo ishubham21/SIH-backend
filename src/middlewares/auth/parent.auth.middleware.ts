@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ParentWithoutPassword } from "../../interfaces";
+import { JwtPayload } from "jsonwebtoken";
 import JWTService from "../../services/jwt.service";
 
 const parentAuthMiddleware = async (
@@ -19,13 +19,14 @@ const parentAuthMiddleware = async (
 
   try {
     const jwtService = new JWTService();
-    const parentData: ParentWithoutPassword =
-      (await jwtService.verifyAccessToken(
-        token,
-      )) as ParentWithoutPassword;
+    const jwtPayload: JwtPayload = await jwtService.verifyAccessToken(
+      token,
+    );
+    // console.log(parentData);
 
-    //attaching decoded parentData with the response
-    res.locals.parentData = parentData;
+    //attaching decoded jwt payload with the response
+    //returns Parent || Child[]
+    res.locals.data = jwtPayload.payload;
     next();
   } catch (error) {
     return res.status(501).json({

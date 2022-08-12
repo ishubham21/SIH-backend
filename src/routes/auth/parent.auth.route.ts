@@ -19,11 +19,11 @@ class ParentAuthRoute {
       res.status(201).json({
         error: null,
         data: {
-          server: "Healthy - Parent"
-        }
-      })
-    })
-    
+          server: "Healthy - Parent",
+        },
+      });
+    });
+
     this.router.post(
       `${this.path}register`,
       (req: Request, res: Response) => {

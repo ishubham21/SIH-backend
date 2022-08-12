@@ -1,6 +1,6 @@
-import { Child, Parent, PrismaClient } from "@prisma/client";
+import { Child, PrismaClient } from "@prisma/client";
 import {
-  ParentLogin,
+  LoginBody,
   ParentRegister,
   ParentWithChildren,
   ParentWithoutPassword,
@@ -10,15 +10,15 @@ import JWTService from "../jwt.service";
 import { genSalt } from "bcryptjs";
 
 class ParentAuthService {
-  protected parent;
-  protected jwtService;
+  private parent;
+  private jwtService;
 
   constructor() {
     this.parent = new PrismaClient().parent;
     this.jwtService = new JWTService();
   }
 
-  protected isParentPresent = async (
+  private isParentPresent = async (
     email: string,
   ): Promise<boolean> => {
     //11:11 WE WILL WIN SIH 2022
@@ -40,13 +40,13 @@ class ParentAuthService {
     });
   };
 
-  protected encryptPassword = async (password: string) => {
+  private encryptPassword = async (password: string) => {
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt);
     return hashedPassword;
   };
 
-  protected comparePassword = (
+  private comparePassword = (
     userPassword: string,
     dbPassword: string,
   ) => {
@@ -72,10 +72,8 @@ class ParentAuthService {
     });
   };
 
-  public login = async (
-    data: ParentLogin,
-    isChildLogin?: boolean,
-  ) => {
+  //this is also getting used in the ChildAuthService
+  public login = async (data: LoginBody, isChildLogin?: boolean) => {
     const { email } = data;
 
     return new Promise<string>((resolve, reject) => {
