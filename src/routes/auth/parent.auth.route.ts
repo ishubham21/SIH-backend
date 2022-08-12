@@ -15,7 +15,7 @@ class ParentAuthRoute {
   }
 
   private intializeRoutes = () => {
-    this.router.get(this.path, (req, res) => {
+    this.router.get(this.path, (req: Request, res: Response) => {
       res.status(201).json({
         error: null,
         data: {
