@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import cors from "cors";
-import { NODE_ENV, SERVER_PORT } from "./config";
+import { NODE_ENV, PORT } from "./config";
 import ParentAuthRoute from "./routes/auth/parent.auth.route";
 
 class App {
@@ -18,7 +18,7 @@ class App {
      */
     this.app = express();
     this.env = NODE_ENV || "development";
-    this.port = SERVER_PORT || 4000;
+    this.port = PORT || 4000;
 
     /**
      * Up the middlewares

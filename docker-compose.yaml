@@ -12,7 +12,7 @@ services:
       args:
         NPM_LOG_LEVEL: notice
     ports:
-      - "${SERVER_PORT}:4000"
+      - "${PORT}:4000"
     environment:
       DATABASE_URL: "${DATABASE_URL}"
       # BCRYPT_SALT: "${BCRYPT_SALT}"
