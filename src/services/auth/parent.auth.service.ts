@@ -79,6 +79,9 @@ class ParentAuthService {
               where: {
                 email,
               },
+              include: {
+                children: true,
+              },
             })) as Parent;
 
             //validate password
