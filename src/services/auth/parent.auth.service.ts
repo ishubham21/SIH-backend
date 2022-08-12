@@ -1,19 +1,24 @@
-import { Parent, PrismaClient } from "@prisma/client";
-import { ParentLogin, ParentRegister } from "../../interfaces";
+import { Child, Parent, PrismaClient } from "@prisma/client";
+import {
+  ParentLogin,
+  ParentRegister,
+  ParentWithChildren,
+  ParentWithoutPassword,
+} from "../../interfaces";
 import { compare, hash } from "bcrypt";
 import JWTService from "../jwt.service";
 import { genSalt } from "bcryptjs";
 
 class ParentAuthService {
-  private parent;
-  private jwtService;
+  protected parent;
+  protected jwtService;
 
   constructor() {
     this.parent = new PrismaClient().parent;
     this.jwtService = new JWTService();
   }
 
-  private isParentPresent = async (
+  protected isParentPresent = async (
     email: string,
   ): Promise<boolean> => {
     //11:11 WE WILL WIN SIH 2022
@@ -24,8 +29,8 @@ class ParentAuthService {
             email,
           },
         })
-        //if user is present, resolve to true + set parentData
-        //if user is not present, resolve to false + parentData = null
+        //if parent is present, resolve to true + set parentData
+        //if parent is not present, resolve to false + parentData = null
         .then((data) => {
           data ? resolve(true) : resolve(false);
         })
@@ -35,13 +40,13 @@ class ParentAuthService {
     });
   };
 
-  private encryptPassword = async (password: string) => {
+  protected encryptPassword = async (password: string) => {
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt);
     return hashedPassword;
   };
 
-  private comparePassword = (
+  protected comparePassword = (
     userPassword: string,
     dbPassword: string,
   ) => {
@@ -67,7 +72,10 @@ class ParentAuthService {
     });
   };
 
-  public login = async (data: ParentLogin) => {
+  public login = async (
+    data: ParentLogin,
+    isChildLogin?: boolean,
+  ) => {
     const { email } = data;
 
     return new Promise<string>((resolve, reject) => {
@@ -75,14 +83,15 @@ class ParentAuthService {
         .then(async (foundParent: boolean) => {
           if (foundParent) {
             //get parent data
-            const parentData: Parent = (await this.parent.findUnique({
-              where: {
-                email,
-              },
-              include: {
-                children: true,
-              },
-            })) as Parent;
+            const parentData: ParentWithChildren =
+              (await this.parent.findUnique({
+                where: {
+                  email,
+                },
+                include: {
+                  children: true,
+                },
+              })) as ParentWithChildren;
 
             //validate password
             if (
@@ -94,11 +103,21 @@ class ParentAuthService {
               //sign a JWT of this parentData
               try {
                 //removing password before signing the access token
-                const { password, ...parentDataToBeSigned } =
-                  parentData;
-                const token = await this.jwtService.signAccessToken(
-                  parentDataToBeSigned,
-                );
+                const {
+                  password,
+                  children,
+                  ...parentDataToBeSigned
+                } = parentData;
+
+                const token = !isChildLogin
+                  ? await this.jwtService.signAccessToken({
+                      ...parentDataToBeSigned,
+                      children,
+                    } as ParentWithoutPassword)
+                  : await this.jwtService.signAccessToken(
+                      children as Child[],
+                    );
+
                 return resolve(token as string);
               } catch (err) {
                 //jwt errors

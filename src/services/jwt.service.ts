@@ -11,7 +11,7 @@ class JWTService {
   }
 
   public signAccessToken = (
-    payload: ParentWithoutPassword | Child,
+    payload: ParentWithoutPassword | Child[] | [],
   ): Promise<string | JsonWebTokenError> => {
     return new Promise<string | JsonWebTokenError>(
       (resolve, reject) => {
@@ -33,16 +33,16 @@ class JWTService {
 
   public verifyAccessToken = (
     token: string,
-  ): Promise<ParentWithoutPassword | Child | JsonWebTokenError> => {
+  ): Promise<ParentWithoutPassword | Child[] | JsonWebTokenError> => {
     return new Promise<
-      ParentWithoutPassword | Child | JsonWebTokenError
+      ParentWithoutPassword | Child[] | JsonWebTokenError
     >((resolve, reject) => {
       jsonwebtoken.verify(token, this.jwtSecret, (err, payload) => {
         if (err) {
           return reject(err as JsonWebTokenError);
         }
 
-        resolve(payload as ParentWithoutPassword | Child);
+        resolve(payload as ParentWithoutPassword | Child[]);
       });
     });
   };

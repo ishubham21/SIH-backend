@@ -1,4 +1,4 @@
-import { Parent } from "@prisma/client";
+import { Child, Parent } from "@prisma/client";
 import { Request } from "express";
 
 export interface ParentInterface {
@@ -8,7 +8,7 @@ export interface ParentInterface {
   password: string;
   createdAt?: any;
   updatedAt?: any;
-  children?: any;
+  children?: Child[] | [];
 }
 
 export interface ParentWithoutPassword {
@@ -17,7 +17,7 @@ export interface ParentWithoutPassword {
   email: string;
   createdAt: Date;
   updatedAt: Date;
-  children?: any;
+  children?: Child[] | [];
 }
 
 export interface ParentRegister {
@@ -33,4 +33,8 @@ export interface ParentLogin {
 
 export interface RequestWithParent extends Request {
   parentData: Parent;
+}
+
+export interface ParentWithChildren extends Parent {
+  children: Child[] | [];
 }
