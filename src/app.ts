@@ -24,7 +24,7 @@ class App {
      * Up the middlewares
      */
     this.initializeMiddlewares();
-    this.app.use("/parent", this.parentAuthRoute.router);
+    this.app.use("/auth/parent", this.parentAuthRoute.router);
 
     this.app.get("/", (req, res) => {
       res.status(200).json({
