@@ -32,6 +32,8 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^4.2.0",
+    "@sentry/node": "^7.10.0",
+    "@sentry/tracing": "^7.10.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",

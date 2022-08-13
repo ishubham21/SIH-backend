@@ -22,7 +22,7 @@ class ParentAuthService {
     email: string,
   ): Promise<boolean> => {
     //11:11 WE WILL WIN SIH 2022
-    return new Promise<boolean>((resolve) => {
+    return new Promise<boolean>((resolve, reject) => {
       this.parent
         .findUnique({
           where: {
@@ -35,7 +35,10 @@ class ParentAuthService {
           data ? resolve(true) : resolve(false);
         })
         .catch((err) => {
-          throw err;
+          reject({
+            ...err,
+            occurance: "This occured in parent.auth.service",
+          });
         });
     });
   };
