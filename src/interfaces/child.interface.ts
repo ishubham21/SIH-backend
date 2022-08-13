@@ -18,4 +18,3 @@ export interface ChildInterface {
   availableCognitiveOnChild?: any;
   availableYogaOnChild?: any;
 }
-

@@ -43,6 +43,9 @@ class App {
       });
     });
 
+    /**
+     * Route to test the sentry health
+     */
     this.app.get("/debug-sentry", (req, res) => {
       throw new Error("Sentry Fine");
     });
