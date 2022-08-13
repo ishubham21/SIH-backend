@@ -22,7 +22,7 @@
     "prisma:generate": "echo \"Generates and install @prisma/client- NOT REQUIRED if using prisma:migrate\" && npx prisma generate",
     "prisma:db-push": "echo \"Applies schema directly to the database - USED IN DEVELOPMENT as an alternative to prisma:migrate\" && npx prisma",
     "prisma:migrate": "echo \"Create migrations from your Prisma schema, apply them to the database, generate @prisma/client - A NEW VERSION WILL BE CREATED - PREVENTS DATA LOSS UNLIKE db:push - USED after all the changes are on a relative stable state using db:push\" && npx prisma migrate dev --name \"init\"",
-    "prisma:deploy": "npx prisma migrate deploy",
+    "prisma:deploy": "echo \"No shadow DB required for this - PROD USE\" && npx prisma migrate deploy",
     "prisma:studio": "npx prisma studio",
     "db:init": "npm run prisma:migrate && npm run prisma:deploy",
     "db:reset": "npx prisma migrate reset"
