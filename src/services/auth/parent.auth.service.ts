@@ -61,10 +61,14 @@ class ParentAuthService {
       this.isParentPresent(email)
         .then(async (foundParent: boolean) => {
           if (!foundParent) {
-            const { id } = await this.parent.create({
-              data,
-            });
-            return resolve(id);
+            try {
+              const { id } = await this.parent.create({
+                data,
+              });
+              return resolve(id);
+            } catch (error) {
+              return reject(error);
+            }
           }
           return reject("Email is already registered");
         })
@@ -81,25 +85,25 @@ class ParentAuthService {
         .then(async (foundParent: boolean) => {
           if (foundParent) {
             //get parent data
-            const parentData: ParentWithChildren =
-              (await this.parent.findUnique({
-                where: {
-                  email,
-                },
-                include: {
-                  children: true,
-                },
-              })) as ParentWithChildren;
+            try {
+              const parentData: ParentWithChildren =
+                (await this.parent.findUnique({
+                  where: {
+                    email,
+                  },
+                  include: {
+                    children: true,
+                  },
+                })) as ParentWithChildren;
 
-            //validate password
-            if (
-              await this.comparePassword(
-                data.password,
-                parentData.password,
-              )
-            ) {
-              //sign a JWT of this parentData
-              try {
+              //validate password
+              if (
+                await this.comparePassword(
+                  data.password,
+                  parentData.password,
+                )
+              ) {
+                //sign a JWT of this parentData
                 //removing password before signing the access token
                 const {
                   password,
@@ -117,12 +121,11 @@ class ParentAuthService {
                     );
 
                 return resolve(token as string);
-              } catch (err) {
-                //jwt errors
-                reject(err);
+              } else {
+                return reject("Password is not valid");
               }
-            } else {
-              return reject("Password is not valid");
+            } catch (error) {
+              return reject(error);
             }
           }
           return reject("Email can not be found");
