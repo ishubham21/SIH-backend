@@ -39,14 +39,14 @@ class ParentAuthController {
 
     if (!validationError) {
       try {
-        const parentID: string = await this.authService.register(
+        const parentId: string = await this.authService.register(
           parentRegister,
         );
 
         return res.status(201).json({
           error: null,
           data: {
-            parentID,
+            parentId,
           },
         });
       } catch (error) {
@@ -58,7 +58,7 @@ class ParentAuthController {
       }
     } else {
       //body validation failed
-      res.status(403).json({
+      return res.status(403).json({
         error: validationError.message,
         data: null,
       });

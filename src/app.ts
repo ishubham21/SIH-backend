@@ -5,6 +5,7 @@ import ParentAuthRoute from "./routes/auth/parent.auth.route";
 import ChildAuthRoute from "./routes/auth/child.auth.route";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import ParentRoute from "./routes/parent/index.route";
 
 class App {
   /**
@@ -13,8 +14,9 @@ class App {
   public app: Application;
   public env: string;
   public port: string | number;
-  public parentAuthRoute = new ParentAuthRoute();
-  public childAuthRoute = new ChildAuthRoute();
+  public parentAuthRoute;
+  public childAuthRoute;
+  public parentRoute;
 
   constructor() {
     /**
@@ -23,6 +25,9 @@ class App {
     this.app = express();
     this.env = NODE_ENV || "development";
     this.port = PORT || 4000;
+    this.parentAuthRoute = new ParentAuthRoute();
+    this.childAuthRoute = new ChildAuthRoute();
+    this.parentRoute = new ParentRoute();
 
     /**
      * Up all the middlewares
@@ -46,7 +51,7 @@ class App {
     /**
      * Route to test the sentry health
      */
-    this.app.get("/debug-sentry", (req, res) => {
+    this.app.get("/debug-sentry", () => {
       throw new Error("Sentry Fine");
     });
 
@@ -97,6 +102,9 @@ class App {
     this.app.use("/auth/parent", this.parentAuthRoute.router);
     //child auth
     this.app.use("/auth/child", this.childAuthRoute.router);
+
+    //parent route
+    this.app.use("/parent", this.parentRoute.router);
   };
 
   private initializeSentryService = () => {

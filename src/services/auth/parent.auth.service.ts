@@ -18,9 +18,7 @@ class ParentAuthService {
     this.jwtService = new JWTService();
   }
 
-  private isParentPresent = async (
-    email: string,
-  ): Promise<boolean> => {
+  private isParentPresent = (email: string): Promise<boolean> => {
     //11:11 WE WILL WIN SIH 2022
     return new Promise<boolean>((resolve, reject) => {
       this.parent
@@ -80,7 +78,10 @@ class ParentAuthService {
   };
 
   //this is also getting used in the ChildAuthService
-  public login = async (data: LoginBody, isChildLogin?: boolean) => {
+  public login = async (
+    data: LoginBody,
+    isChildLogin?: boolean,
+  ): Promise<string> => {
     const { email } = data;
 
     return new Promise<string>((resolve, reject) => {
@@ -109,6 +110,7 @@ class ParentAuthService {
                 //sign a JWT of this parentData
                 //removing password before signing the access token
                 const {
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   password,
                   children,
                   ...parentDataToBeSigned

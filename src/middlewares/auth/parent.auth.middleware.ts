@@ -22,7 +22,6 @@ const parentAuthMiddleware = async (
     const jwtPayload: JwtPayload = await jwtService.verifyAccessToken(
       token,
     );
-    // console.log(parentData);
 
     //attaching decoded jwt payload with the response
     //returns Parent || Child[]

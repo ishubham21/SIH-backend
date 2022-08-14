@@ -19,7 +19,7 @@ class ParentAuthRoute {
       res.status(201).json({
         error: null,
         data: {
-          server: "Healthy - Parent",
+          server: "Healthy Parent Auth Service",
         },
       });
     });

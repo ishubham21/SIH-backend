@@ -19,7 +19,7 @@ class ChildAuthRoute {
       res.status(201).json({
         error: null,
         data: {
-          server: "Healthy - Children",
+          server: "Healthy Children Auth Service",
         },
       });
     });
