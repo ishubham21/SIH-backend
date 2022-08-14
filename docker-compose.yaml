@@ -15,9 +15,7 @@ services:
       - "${PORT}:4000"
     environment:
       DATABASE_URL: "${DATABASE_URL}"
-      # BCRYPT_SALT: "${BCRYPT_SALT}"
-      # JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
-      # JWT_EXPIRATION: "${JWT_EXPIRATION}"
+      JWT_ACCESS_TOKEN_SECRET: "${JWT_ACCESS_TOKEN_SECRET}"
     depends_on:
       - migration
 
@@ -30,7 +28,7 @@ services:
     working_dir: /app/server
     environment:
       DATABASE_URL: "${DATABASE_URL}"
-      # BCRYPT_SALT: "${BCRYPT_SALT}" 
+      JWT_ACCESS_TOKEN_SECRET: "${JWT_ACCESS_TOKEN_SECRET}"
     depends_on:
       db:
         condition: service_healthy
