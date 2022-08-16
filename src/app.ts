@@ -6,6 +6,7 @@ import ChildAuthRoute from "./routes/auth/child.auth.route";
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import ParentRoute from "./routes/parent/index.route";
+import ChildRoute from "./routes/child/index.route";
 
 class App {
   /**
@@ -17,6 +18,7 @@ class App {
   public parentAuthRoute;
   public childAuthRoute;
   public parentRoute;
+  public childRoute;
 
   constructor() {
     /**
@@ -28,6 +30,7 @@ class App {
     this.parentAuthRoute = new ParentAuthRoute();
     this.childAuthRoute = new ChildAuthRoute();
     this.parentRoute = new ParentRoute();
+    this.childRoute = new ChildRoute();
 
     /**
      * Up all the middlewares
@@ -105,6 +108,8 @@ class App {
 
     //parent route
     this.app.use("/parent", this.parentRoute.router);
+
+    this.app.use("/child", this.childRoute.router);
   };
 
   private initializeSentryService = () => {

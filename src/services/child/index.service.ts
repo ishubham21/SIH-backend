@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Child, PrismaClient } from "@prisma/client";
 import { ChildRegister } from "../../interfaces";
 import ParentService from "../parent/index.service";
 
@@ -11,6 +11,58 @@ class ChildService {
 
     this.prisma = new PrismaClient();
   }
+
+  public getChildById = async (id: string): Promise<Child> => {
+    return new Promise<Child>((resolve, reject) => {
+      this.prisma.child
+        .findUnique({
+          where: {
+            id,
+          },
+          include: {
+            availableCognitiveOnChild: {
+              include: {
+                task: true,
+              },
+            },
+            assignedCognitiveOnChild: {
+              include: {
+                task: true,
+              },
+            },
+            completedCognitiveOnChild: {
+              include: {
+                task: true,
+              },
+            },
+            availableYogaOnChild: {
+              include: {
+                yoga: true,
+              },
+            },
+            assignedYogaOnChild: {
+              include: {
+                yoga: true,
+              },
+            },
+            completedYogaOnChild: {
+              include: {
+                yoga: true,
+              },
+            },
+          },
+        })
+        .then((data) => {
+          if (!data) {
+            return reject("Child with this id could not be found");
+          }
+          return resolve(data);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 
   //add child
   public addChild = async (data: ChildRegister): Promise<string> => {
