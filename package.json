@@ -22,10 +22,11 @@
     "db:push": "npx prisma db push",
     "db:migrate": "npx prisma migrate dev --name \"init\"",
     "db:deploy": "npx prisma migrate deploy",
-    "db:init": "npm run prisma:migrate && npm run prisma:deploy",
+    "db:init": "npm run db:migrate && npm run db:deploy",
     "db:reset": "npx prisma migrate reset",
     "prisma:generate": "npx prisma generate",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "seed:cognitive": "nodemon src/seeds/cognitive.seed.ts"
   },
   "keywords": [],
   "author": "ishubham21",

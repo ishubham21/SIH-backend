@@ -1,192 +1,90 @@
 import { PrismaClient } from "@prisma/client";
 
-const cognitiveForToddlers1 = {
-  name: "TODDLER1",
-  description: "Bleh bleh bleh bleh",
-  ageGroup: "Toddler",
-  questions: JSON.stringify({
-    "1": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "2": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "3": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "4": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-  }),
-};
+const prisma = new PrismaClient();
 
-const cognitiveForTweens1 = {
-  name: "TWEEN1",
-  description: "Bleh bleh bleh bleh",
-  ageGroup: "Toddler",
-  questions: JSON.stringify({
-    "1": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
+const func = async () => {
+  const tasks = await prisma.cognitiveTask.findMany({
+    where: {
+      ageGroup: "PreSchool",
     },
-    "2": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "3": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "4": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-  }),
-};
-
-const cognitiveForTeens1 = {
-  name: "TEEN1",
-  description: "Bleh bleh bleh bleh",
-  ageGroup: "Toddler",
-  questions: JSON.stringify({
-    "1": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "2": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "3": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-    "4": {
-      prompt: "",
-      options: {
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-      },
-      answer: "",
-    },
-  }),
-};
-
-const seedCongnitiveTasks = async (data: any) => {
-  try {
-    const prismaClient = new PrismaClient();
-    //try adding tasks
-    const cognitive = await prismaClient.cognitiveTask.create({
-      data,
-    });
-    return cognitive;
-  } catch (error) {
-    //catch errors
-    throw new Error("Tasks could not be seeded");
-  }
-};
-
-//seeding for toddlers - module 1
-seedCongnitiveTasks(cognitiveForToddlers1)
-  .then((data) => {
-    // eslint-disable-next-line no-console
-    console.log("Seeded successfully", data);
-  })
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.log("Error seeding task data", err);
   });
 
-//seeding for tweens - module 1
-seedCongnitiveTasks(cognitiveForTweens1)
-  .then((data) => {
-    // eslint-disable-next-line no-console
-    console.log("Seeded successfully", data);
-  })
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.log("Error seeding task data", err);
+  const availableTasksId = tasks.map((task) => task.id);
+  const createArr = availableTasksId.map((id) => {
+    return { cognitiveTaskId: id };
   });
 
-//seeding for teens - module 1
-seedCongnitiveTasks(cognitiveForTeens1)
-  .then((data) => {
-    // eslint-disable-next-line no-console
-    console.log("Seeded successfully", data);
-  })
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.log("Error seeding task data", err);
+  console.log(createArr);
+
+  console.log(availableTasksId);
+
+  // const child = await prisma.child.update({
+  //   where: {
+  //     // ... provide filter here
+  //     id: "d6c2caf8-8027-4adb-9393-ec81dcf26ed8",
+  //   },
+  //   data: {
+  //     // ... provide data here
+  //     availableCognitiveOnChild: {
+  //       create: createArr
+  //     },
+  //   },
+  // });
+
+  const child = await prisma.child.findMany({
+    where: {
+      id: "d6c2caf8-8027-4adb-9393-ec81dcf26ed8",
+    },
+    include: {
+      availableCognitiveOnChild: {
+        include: {
+          task: true,
+        },
+      },
+    },
   });
+
+  console.log(child[0].availableCognitiveOnChild);
+};
+
+func();
+
+const questions = [
+  {
+    questionText: 'What comes after 4?',
+    answerOptions: [
+      { answerText: '4', isCorrect: false },
+      { answerText: '5', isCorrect: true },
+      { answerText: '6', isCorrect: false },
+      { answerText: '7', isCorrect: false },
+    ],
+  },
+  {
+    questionText: 'What comes before 8?',
+    answerOptions: [
+      { answerText: '9', isCorrect: false },
+      { answerText: '7', isCorrect: true },
+      { answerText: '10', isCorrect: false },
+      { answerText: '6', isCorrect: false },
+    ],
+  },
+  {
+    questionText: 'What color is Apple?',
+    answerOptions: [
+      { answerText: 'Red', isCorrect: true },
+      { answerText: 'Blue', isCorrect: false },
+      { answerText: 'Green', isCorrect: false },
+      { answerText: 'Pink', isCorrect: false },
+    ],
+  },
+  {
+    questionText: 'What comes after D?',
+    answerOptions: [
+      { answerText: 'H', isCorrect: false },
+      { answerText: 'G', isCorrect: false },
+      { answerText: 'F', isCorrect: false },
+      { answerText: 'E', isCorrect: true },
+    ],
+  },
+];
+

@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AgeGroup" AS ENUM ('Toddler', 'Tween', 'Teen');
+CREATE TYPE "AgeGroup" AS ENUM ('PreSchool', 'PreTeen', 'Teen');
 
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('Male', 'Female', 'Other');

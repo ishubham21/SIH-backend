@@ -3,13 +3,13 @@ import { ChildRegister } from "../../interfaces";
 import ParentService from "../parent/index.service";
 
 class ChildService {
-  private child;
+  private prisma;
   private parentService;
 
   constructor() {
     this.parentService = new ParentService();
 
-    this.child = new PrismaClient().child;
+    this.prisma = new PrismaClient();
   }
 
   //add child
@@ -25,9 +25,52 @@ class ChildService {
           } else {
             //add child only if parent is found else the child would be lost in the DB
             try {
-              const { id } = await this.child.create({
+              const { id } = await this.prisma.child.create({
                 data,
+                //we can connect here too - directly creating values in availableCognitiveOnChild/Yoga - see many-to-many relationships
               });
+
+              //after creating child, we have to populate availableConitiveOnChild, availableYogaOnChild
+              const tasks = await this.prisma.cognitiveTask.findMany({
+                where: {
+                  ageGroup: data.ageGroup,
+                },
+              });
+
+              const yogas = await this.prisma.yoga.findMany({
+                where: {
+                  ageGroup: data.ageGroup,
+                },
+              });
+
+              //tasks that are available for child's ageGroup
+              const availableTasksId = tasks.map((task) => task.id);
+              const createCognitive = availableTasksId.map((id) => {
+                return { cognitiveTaskId: id };
+              });
+
+              const availableYogaId = yogas.map((yoga) => yoga.id);
+              const createYoga = availableYogaId.map((id) => {
+                return { yogaId: id };
+              });
+
+              //add tasks here - on availableCognitiveOnChild
+
+              // const child = await this.prisma.child.update({
+              //   where: {
+              //     id,
+              //   },
+              //   data: {
+              //     // ... provide data here
+              //     availableCognitiveOnChild: {
+              //       create: createCognitive,
+              //     },
+              //     availableYogaOnChild: {
+              //       create: createYoga,
+              //     },
+              //   },
+              // });
+
               return resolve(id);
             } catch (error) {
               return reject(error);

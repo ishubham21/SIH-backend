@@ -159,8 +159,8 @@ model availableYogaOnChild {
 // ----enums---- //
 
 enum AgeGroup {
-  Toddler
-  Tween
+  PreSchool
+  PreTeen
   Teen
 }
 

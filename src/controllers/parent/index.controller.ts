@@ -17,7 +17,7 @@ class ParentController {
     const schema = Joi.object({
       name: Joi.string().min(3).max(256).required(),
       ageGroup: Joi.string()
-        .valid("Toddler", "Tween", "Teen")
+        .valid("PreSchool", "PreTeen", "Teen")
         .required(),
       gender: Joi.string()
         .valid("Male", "Female", "Other")
