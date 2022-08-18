@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { Child, PrismaClient } from "@prisma/client";
 import {
   LoginBody,
@@ -109,12 +110,27 @@ class ParentAuthService {
               ) {
                 //sign a JWT of this parentData
                 //removing password before signing the access token
-                const {
+                let {
                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                   password,
                   children,
                   ...parentDataToBeSigned
                 } = parentData;
+
+                //nullifying pwd
+                password = "";
+
+                //if anyone is trying to login from child, abstract data
+                if (isChildLogin) {
+                  children = children.filter(
+                    (child) => child.ageGroup !== "Toddler",
+                  );
+                  if (children.length == 0) {
+                    return reject(
+                      "Toddlers are not allowed to access this application",
+                    );
+                  }
+                }
 
                 const token = !isChildLogin
                   ? await this.jwtService.signAccessToken({

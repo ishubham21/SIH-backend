@@ -1,5 +1,5 @@
 export type Gender = "Male" | "Female" | "Other";
-export type AgeGroup = "PreSchool" | "PreTeen" | "Teen";
+export type AgeGroup = "Toddler" | "Preschool" | "Preteen" | "Teen";
 
 export interface ChildRegister {
   parentId: string;
