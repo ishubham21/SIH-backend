@@ -20,6 +20,13 @@ class ChildRoute {
         this.childController.getChildById(req, res);
       },
     );
+
+    this.router.post(
+      `${this.path}complete/cognitive`,
+      (req: Request, res: Response) => {
+        this.childController.completeCognitive(req, res);
+      },
+    );
   };
 }
 

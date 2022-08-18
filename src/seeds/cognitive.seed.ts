@@ -292,35 +292,19 @@ const prisma = new PrismaClient();
 // //[{"questionText":"9 x 7 = ","answerOptions":[{"answerText":"63","isCorrect":true},{"answerText":"54","isCorrect":false},{"answerText":"45","isCorrect":false},{"answerText":"90","isCorrect":false}]},{"questionText":"Which way is anti-clockwise?","answerOptions":[{"answerText":"Right","isCorrect":false},{"answerText":"Left","isCorrect":true}]},{"questionText":"A figure with 8 sides is known as?","answerOptions":[{"answerText":"Square","isCorrect":false},{"answerText":"Pentagon","isCorrect":false},{"answerText":"Octagon","isCorrect":true},{"answerText":"Hexagon","isCorrect":false}]},{"questionText":"Which plant is closest to sun?","answerOptions":[{"answerText":"Mercury","isCorrect":true},{"answerText":"Earth","isCorrect":false},{"answerText":"Venus","isCorrect":false},{"answerText":"Saturn","isCorrect":false}]}]
 
 const func = async () => {
-  // const task = await prisma.availableCognitiveOnChild.findMany({
-  //   where: {
-  //     childId: "bb05dc9a-e908-496a-a05b-176c4bd6d016",
-  //     cognitiveTaskId: 2
-  //   }
-  // });
-  const [task, totalTasks] = await prisma.$transaction([
-    // prisma.availableCognitiveOnChild.delete({
-    //   where: {
-    //     // eslint-disable-next-line camelcase
-    //     childId_cognitiveTaskId: {childId: "bb05dc9a-e908-496a-a05b-176c4bd6d016", cognitiveTaskId: 2}
-    //   }
-    // }),
-    prisma.assignedCognitiveOnChild.findMany({
-
-    }),   
-    prisma.child.update({
-      where: {
-        id: "a881e0da-0308-4cce-aea3-602b598f72bc"
+  const task = await prisma.child.update({
+    where: {
+      id: "e9379078-b832-4597-83d1-e397f651da7c",
+    },
+    data: {
+      completedCognitiveOnChild: {
+        create: {
+          cognitiveTaskId: 2,
+        },
       },
-      data: {
-        assignedCognitiveOnChild: {
-          create: {
-            cognitiveTaskId: 2
-          }
-        }
-      }
-    })
-  ])
+    },
+  });
+
   console.log(task);
 };
 

@@ -2,7 +2,6 @@ import {
   assignedCognitiveOnChild,
   availableCognitiveOnChild,
   Child,
-  CognitiveTask,
   PrismaClient,
 } from "@prisma/client";
 import { ChildRegister } from "../../interfaces";
@@ -38,7 +37,7 @@ class ChildService {
           .then(async (task) => {
             //if delete was successful, add this task to assignedTasks - this should be a transaction to be done in a single go or dropped
             try {
-              this.prisma.child.update({
+              await this.prisma.child.update({
                 where: {
                   id: childId,
                 },
@@ -91,7 +90,7 @@ class ChildService {
                 },
               })) as Child; //never null, already ver
 
-              this.prisma.child.update({
+              await this.prisma.child.update({
                 where: {
                   id: childId,
                 },
@@ -104,6 +103,7 @@ class ChildService {
                   },
                 },
               });
+
               return resolve(task);
             } catch (error) {
               return reject(

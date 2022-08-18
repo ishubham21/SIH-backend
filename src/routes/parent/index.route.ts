@@ -1,9 +1,11 @@
 import { Router, Request, Response } from "express";
+import ChildController from "../../controllers/child/index.controller";
 import ParentController from "../../controllers/parent/index.controller";
 
 class ParentRoute {
   public path = "/";
   private parentController;
+  private childController;
   public router;
 
   constructor() {
@@ -11,6 +13,7 @@ class ParentRoute {
     this.initializeRoutes();
 
     this.parentController = new ParentController();
+    this.childController = new ChildController();
   }
 
   private initializeRoutes = () => {
@@ -27,6 +30,13 @@ class ParentRoute {
       `${this.path}add-child`,
       (req: Request, res: Response) => {
         this.parentController.addChild(req, res);
+      },
+    );
+
+    this.router.post(
+      `${this.path}assign/cognitive`,
+      (req: Request, res: Response) => {
+        this.childController.assignCognitive(req, res);
       },
     );
   };
