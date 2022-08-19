@@ -123,13 +123,22 @@ class ChildController {
       try {
         await this.childService.getChildById(childId);
         await this.yogaService.getYogaById(yogaId);
+
+        const yoga = this.childService.completeYoga(childId, yogaId);
+
+        return res.status(200).json({
+          error: null,
+          data: {
+            yoga,
+            status: "Completion successful",
+          },
+        });
+        
       } catch (error) {
         return res.status(400).json({
           error,
           data: null,
         });
-
-        //start from here
       }
     } else {
       //body validation failed

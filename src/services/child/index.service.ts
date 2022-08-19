@@ -97,42 +97,38 @@ class ChildService {
   public completeCognitive = (
     childId: string,
     cognitiveTaskId: number,
-  ): Promise<assignedCognitiveOnChild> => {
+  ) => {
     //if completed, add coins and update
     return new Promise<assignedCognitiveOnChild>(
       (resolve, reject) => {
-        this.prisma.assignedCognitiveOnChild
-          .delete({
-            where: {
-              // eslint-disable-next-line camelcase
-              childId_cognitiveTaskId: {
-                childId,
-                cognitiveTaskId,
-              },
-            },
-          })
-          .then(async (task) => {
-            try {
-              await this.prisma.child.update({
-                where: {
-                  id: childId,
+        this.prisma
+          .$transaction([
+            this.prisma.assignedCognitiveOnChild.delete({
+              where: {
+                // eslint-disable-next-line camelcase
+                childId_cognitiveTaskId: {
+                  childId,
+                  cognitiveTaskId,
                 },
-                data: {
-                  coins: { increment: 10 },
-                  completedCognitiveOnChild: {
-                    create: {
-                      cognitiveTaskId,
-                    },
+              },
+            }),
+            this.prisma.child.update({
+              where: {
+                id: childId,
+              },
+              data: {
+                coins: { increment: 10 },
+                completedCognitiveOnChild: {
+                  create: {
+                    cognitiveTaskId,
                   },
                 },
-              });
-
-              return resolve(task);
-            } catch (error) {
-              return reject(
-                "Not able to register the completion of task",
-              );
-            }
+              },
+            }),
+          ])
+          .then((value) => {
+            const [assinedCognitive] = value;
+            return resolve(assinedCognitive);
           })
           .catch((error) => {
             return reject(error);
@@ -141,10 +137,44 @@ class ChildService {
     );
   };
 
-  // public completeYoga = (childId: string, yogaId: number) => {
-  //   return new Promise<void>((resolve, reject) => {
-  //   });
-  // };
+  public completeYoga = (childId: string, yogaId: number) => {
+    return new Promise<assignedYogaOnChild>((resolve, reject) => {
+      this.prisma
+        .$transaction([
+          this.prisma.assignedYogaOnChild.delete({
+            where: {
+              // eslint-disable-next-line camelcase
+              childId_yogaId: {
+                childId,
+                yogaId,
+              },
+            },
+          }),
+          this.prisma.child.update({
+            where: {
+              id: childId,
+            },
+            data: {
+              coins: {
+                increment: 10,
+              },
+              completedYogaOnChild: {
+                create: {
+                  yogaId,
+                },
+              },
+            },
+          }),
+        ])
+        .then((value) => {
+          const [assignedYoga] = value;
+          return resolve(assignedYoga);
+        })
+        .catch((error) => {
+          return reject(error);
+        });
+    });
+  };
 
   public getChildById = async (id: string): Promise<Child> => {
     return new Promise<Child>((resolve, reject) => {

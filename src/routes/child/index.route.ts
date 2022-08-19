@@ -27,6 +27,13 @@ class ChildRoute {
         this.childController.completeCognitive(req, res);
       },
     );
+
+    this.router.post(
+      `${this.path}complete/yoga`,
+      (req: Request, res: Response) => {
+        this.childController.completeYoga(req, res);
+      },
+    );
   };
 }
 
