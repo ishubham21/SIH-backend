@@ -143,7 +143,6 @@ class ChildService {
 
   // public completeYoga = (childId: string, yogaId: number) => {
   //   return new Promise<void>((resolve, reject) => {
-
   //   });
   // };
 
