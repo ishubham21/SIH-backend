@@ -1,5 +1,6 @@
 import {
   assignedCognitiveOnChild,
+  assignedYogaOnChild,
   availableCognitiveOnChild,
   Child,
   PrismaClient,
@@ -13,7 +14,6 @@ class ChildService {
 
   constructor() {
     this.parentService = new ParentService();
-
     this.prisma = new PrismaClient();
   }
 
@@ -21,48 +21,76 @@ class ChildService {
   public assignCognitive = (
     childId: string,
     cognitiveTaskId: number,
-  ): Promise<availableCognitiveOnChild> => {
+  ) => {
     return new Promise<availableCognitiveOnChild>(
       (resolve, reject) => {
-        this.prisma.availableCognitiveOnChild
-          .delete({
-            where: {
-              // eslint-disable-next-line camelcase
-              childId_cognitiveTaskId: {
-                childId,
-                cognitiveTaskId,
-              },
-            },
-          })
-          .then(async (task) => {
-            //if delete was successful, add this task to assignedTasks - this should be a transaction to be done in a single go or dropped
-            try {
-              await this.prisma.child.update({
-                where: {
-                  id: childId,
+        this.prisma
+          .$transaction([
+            this.prisma.availableCognitiveOnChild.delete({
+              where: {
+                // eslint-disable-next-line camelcase
+                childId_cognitiveTaskId: {
+                  childId,
+                  cognitiveTaskId,
                 },
-                data: {
-                  assignedCognitiveOnChild: {
-                    create: {
-                      cognitiveTaskId,
-                    },
+              },
+            }),
+            this.prisma.child.update({
+              where: {
+                id: childId,
+              },
+              data: {
+                assignedCognitiveOnChild: {
+                  create: {
+                    cognitiveTaskId,
                   },
                 },
-              });
-              return resolve(task);
-            } catch (error) {
-              return reject("Error assigning the task");
-            }
+              },
+            }),
+          ])
+          .then((transation) => {
+            const [availableCognitive] = transation;
+            return resolve(availableCognitive);
           })
-          .catch((error) => {
-            return reject(error);
-          });
+          .catch((error) => reject(error));
       },
     );
   };
 
-  public assignYoga = () => {
-    //
+  public assignYoga = async (childId: string, yogaId: number) => {
+    return new Promise<assignedYogaOnChild>((resolve, reject) => {
+      //doing a transaction to prevent faults
+      this.prisma
+        .$transaction([
+          this.prisma.availableYogaOnChild.delete({
+            where: {
+              // eslint-disable-next-line camelcase
+              childId_yogaId: {
+                childId,
+                yogaId,
+              },
+            },
+          }),
+          this.prisma.child.update({
+            where: {
+              id: childId,
+            },
+            data: {
+              assignedYogaOnChild: {
+                create: {
+                  yogaId,
+                },
+              },
+            },
+          }),
+        ])
+        .then((value) => {
+          //destructuring
+          const [availableYoga] = value;
+          return resolve(availableYoga);
+        })
+        .catch((error) => reject(error));
+    });
   };
 
   public completeCognitive = (
