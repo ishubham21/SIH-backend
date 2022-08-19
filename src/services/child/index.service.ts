@@ -93,6 +93,7 @@ class ChildService {
     });
   };
 
+  //CONVERT THIS INTO A TRANSACTION
   public completeCognitive = (
     childId: string,
     cognitiveTaskId: number,
@@ -112,18 +113,12 @@ class ChildService {
           })
           .then(async (task) => {
             try {
-              const child = (await this.prisma.child.findUnique({
-                where: {
-                  id: childId,
-                },
-              })) as Child; //never null, already ver
-
               await this.prisma.child.update({
                 where: {
                   id: childId,
                 },
                 data: {
-                  coins: child.coins + 10,
+                  coins: { increment: 10 },
                   completedCognitiveOnChild: {
                     create: {
                       cognitiveTaskId,
@@ -146,9 +141,11 @@ class ChildService {
     );
   };
 
-  public completeYoga = () => {
-    //
-  };
+  // public completeYoga = (childId: string, yogaId: number) => {
+  //   return new Promise<void>((resolve, reject) => {
+
+  //   });
+  // };
 
   public getChildById = async (id: string): Promise<Child> => {
     return new Promise<Child>((resolve, reject) => {

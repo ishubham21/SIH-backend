@@ -4,7 +4,7 @@ import { Child } from "@prisma/client";
 import TaskService from "../../services/task/index.service";
 import YogaService from "../../services/yoga/index.service";
 import Joi, { ValidationError } from "joi";
-import { CognitiveRequest } from "../../interfaces";
+import { CognitiveRequest, YogaRequest } from "../../interfaces";
 
 class ChildController {
   private childService;
@@ -26,6 +26,53 @@ class ChildController {
     });
 
     return schema.validate(requestBody);
+  };
+
+  private verifyYogaRequests = (requestBody: YogaRequest) => {
+    const schema = Joi.object({
+      childId: Joi.string().required(),
+      yogaId: Joi.required(),
+    });
+
+    return schema.validate(requestBody);
+  };
+
+  public assignYoga = async (req: Request, res: Response) => {
+    const { childId, yogaId } = req.body;
+
+    const validationError: ValidationError | null | undefined =
+      this.verifyYogaRequests(req.body).error;
+
+    if (!validationError) {
+      try {
+        await this.childService.getChildById(childId);
+        await this.yogaService.getYogaById(yogaId);
+
+        const yoga = await this.childService.assignYoga(
+          childId,
+          yogaId,
+        );
+
+        return res.status(200).json({
+          error: null,
+          data: {
+            yoga,
+            status: "Assignment successful",
+          },
+        });
+      } catch (error) {
+        return res.status(400).json({
+          error,
+          data: null,
+        });
+      }
+    } else {
+      //body validation failed
+      return res.status(403).json({
+        error: validationError.message,
+        data: null,
+      });
+    }
   };
 
   public assignCognitive = async (req: Request, res: Response) => {
@@ -56,6 +103,33 @@ class ChildController {
           error,
           data: null,
         });
+      }
+    } else {
+      //body validation failed
+      return res.status(403).json({
+        error: validationError.message,
+        data: null,
+      });
+    }
+  };
+
+  public completeYoga = async (req: Request, res: Response) => {
+    const { childId, yogaId } = req.body;
+
+    const validationError: ValidationError | null | undefined =
+      this.verifyYogaRequests(req.body).error;
+
+    if (!validationError) {
+      try {
+        await this.childService.getChildById(childId);
+        await this.yogaService.getYogaById(yogaId);
+      } catch (error) {
+        return res.status(400).json({
+          error,
+          data: null,
+        });
+
+        //start from here
       }
     } else {
       //body validation failed

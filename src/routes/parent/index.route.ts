@@ -39,6 +39,13 @@ class ParentRoute {
         this.childController.assignCognitive(req, res);
       },
     );
+
+    this.router.post(
+      `${this.path}assign/yoga`,
+      (req: Request, res: Response) => {
+        this.childController.assignYoga(req, res);
+      },
+    );
   };
 }
 

@@ -8,5 +8,10 @@ export interface CognitiveRequest {
   cognitiveTaskId: number;
 }
 
+export interface YogaRequest {
+  childId: string;
+  yogaId: string;
+}
+
 export * from "./child.interface";
 export * from "./parent.interface";
