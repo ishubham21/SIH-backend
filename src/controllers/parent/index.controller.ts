@@ -46,7 +46,7 @@ class ParentController {
           },
         });
       } catch (error) {
-        return res.status(501).json({
+        return res.status(500).json({
           error: error,
           data: null,
         });

@@ -5,7 +5,7 @@ import {
 } from "@prisma/client";
 
 class TaskService {
-  private prisma;
+  private prisma: any;
 
   constructor() {
     this.prisma = new PrismaClient();
@@ -27,7 +27,7 @@ class TaskService {
               },
             },
           })
-          .then((task) => {
+          .then((task: assignedCognitiveOnChild) => {
             if (!task)
               return reject(
                 "This task was not assigned, there's some request error",
@@ -35,7 +35,7 @@ class TaskService {
 
             return resolve(task);
           })
-          .catch((error) => {
+          .catch((error: any) => {
             return reject(error);
           });
       },
@@ -50,12 +50,12 @@ class TaskService {
             id,
           },
         })
-        .then((task) => {
+        .then((task: CognitiveTask) => {
           if (!task)
             return reject("Task with this id could not be found");
           return resolve(task);
         })
-        .catch((error) => reject(error));
+        .catch((error: any) => reject(error));
     });
   };
 }

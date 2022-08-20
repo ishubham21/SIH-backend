@@ -3,13 +3,16 @@ import {
   assignedYogaOnChild,
   availableCognitiveOnChild,
   Child,
+  CognitiveTask,
+  Prisma,
   PrismaClient,
+  Yoga,
 } from "@prisma/client";
 import { ChildRegister } from "../../interfaces";
 import ParentService from "../parent/index.service";
 
 class ChildService {
-  private prisma;
+  private prisma: any;
   private parentService;
 
   constructor() {
@@ -48,11 +51,11 @@ class ChildService {
               },
             }),
           ])
-          .then((transation) => {
+          .then((transation: any) => {
             const [availableCognitive] = transation;
             return resolve(availableCognitive);
           })
-          .catch((error) => reject(error));
+          .catch((error: any) => reject(error));
       },
     );
   };
@@ -84,12 +87,12 @@ class ChildService {
             },
           }),
         ])
-        .then((value) => {
+        .then((value: any) => {
           //destructuring
           const [availableYoga] = value;
           return resolve(availableYoga);
         })
-        .catch((error) => reject(error));
+        .catch((error: any) => reject(error));
     });
   };
 
@@ -126,11 +129,11 @@ class ChildService {
               },
             }),
           ])
-          .then((value) => {
+          .then((value: any) => {
             const [assinedCognitive] = value;
             return resolve(assinedCognitive);
           })
-          .catch((error) => {
+          .catch((error: any) => {
             return reject(error);
           });
       },
@@ -166,11 +169,11 @@ class ChildService {
             },
           }),
         ])
-        .then((value) => {
+        .then((value: any) => {
           const [assignedYoga] = value;
           return resolve(assignedYoga);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           return reject(error);
         });
     });
@@ -216,13 +219,13 @@ class ChildService {
             },
           },
         })
-        .then((data) => {
+        .then((data: any) => {
           if (!data) {
             return reject("Child with this id could not be found");
           }
           return resolve(data);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           return reject(error);
         });
     });
@@ -265,13 +268,19 @@ class ChildService {
               });
 
               //tasks that are available for child's ageGroup
-              const availableTasksId = tasks.map((task) => task.id);
-              const createCognitive = availableTasksId.map((id) => {
-                return { cognitiveTaskId: id };
-              });
+              const availableTasksId = tasks.map(
+                (task: CognitiveTask) => task.id,
+              );
+              const createCognitive = availableTasksId.map(
+                (id: string) => {
+                  return { cognitiveTaskId: id };
+                },
+              );
 
-              const availableYogaId = yogas.map((yoga) => yoga.id);
-              const createYoga = availableYogaId.map((id) => {
+              const availableYogaId = yogas.map(
+                (yoga: Yoga) => yoga.id,
+              );
+              const createYoga = availableYogaId.map((id: string) => {
                 return { yogaId: id };
               });
 
@@ -292,9 +301,11 @@ class ChildService {
 
               return resolve(child.id);
             } catch (error) {
+              console.log(error);
+
               return reject({
                 error,
-                origin: "While trying to add child"
+                origin: "While trying to add child",
               });
             }
           }

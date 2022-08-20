@@ -1,7 +1,7 @@
 import { PrismaClient, Yoga } from "@prisma/client";
 
 class YogaService {
-  private prisma;
+  private prisma: any;
 
   constructor() {
     this.prisma = new PrismaClient();
@@ -15,12 +15,12 @@ class YogaService {
             id,
           },
         })
-        .then((task) => {
-          if (!task)
+        .then((yoga: Yoga) => {
+          if (!yoga)
             return reject("Yoga with this id could not be found");
-          return resolve(task);
+          return resolve(yoga);
         })
-        .catch((error) => reject(error));
+        .catch((error: any) => reject(error));
     });
   };
 }
