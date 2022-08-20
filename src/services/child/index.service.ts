@@ -292,7 +292,10 @@ class ChildService {
 
               return resolve(child.id);
             } catch (error) {
-              return reject(error);
+              return reject({
+                error,
+                origin: "While trying to add child"
+              });
             }
           }
         })

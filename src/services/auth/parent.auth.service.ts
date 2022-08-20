@@ -122,6 +122,9 @@ class ParentAuthService {
 
                 //if anyone is trying to login from child, abstract data
                 if (isChildLogin) {
+                  if(children.length == 0){
+                    return reject("No kids could be found")
+                  }
                   children = children.filter(
                     (child) => child.ageGroup !== "Toddler",
                   );
