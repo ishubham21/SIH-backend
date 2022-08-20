@@ -14,6 +14,13 @@ class ChildRoute {
   }
 
   private initializeRoutes = () => {
+    this.router.get(`${this.path}`, (req: Request, res: Response) => {
+      res.status(200).json({
+        error: null,
+        data: "Child - Healthy",
+      });
+    });
+
     this.router.get(
       `${this.path}data/:id`,
       (req: Request, res: Response) => {

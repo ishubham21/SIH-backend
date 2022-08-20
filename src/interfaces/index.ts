@@ -13,5 +13,10 @@ export interface YogaRequest {
   yogaId: string;
 }
 
+export interface Cogn {
+  childId: string;
+  taskId: string;
+}
+
 export * from "./child.interface";
 export * from "./parent.interface";

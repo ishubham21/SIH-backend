@@ -1,8 +1,6 @@
 // import { PrismaClient } from "@prisma/client";
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Blob } from "buffer";
 
 // // const func = async () => {
 // //   const tasks = await prisma.cognitiveTask.findMany({
@@ -291,23 +289,16 @@ const prisma = new PrismaClient();
 // ];
 // //[{"questionText":"9 x 7 = ","answerOptions":[{"answerText":"63","isCorrect":true},{"answerText":"54","isCorrect":false},{"answerText":"45","isCorrect":false},{"answerText":"90","isCorrect":false}]},{"questionText":"Which way is anti-clockwise?","answerOptions":[{"answerText":"Right","isCorrect":false},{"answerText":"Left","isCorrect":true}]},{"questionText":"A figure with 8 sides is known as?","answerOptions":[{"answerText":"Square","isCorrect":false},{"answerText":"Pentagon","isCorrect":false},{"answerText":"Octagon","isCorrect":true},{"answerText":"Hexagon","isCorrect":false}]},{"questionText":"Which plant is closest to sun?","answerOptions":[{"answerText":"Mercury","isCorrect":true},{"answerText":"Earth","isCorrect":false},{"answerText":"Venus","isCorrect":false},{"answerText":"Saturn","isCorrect":false}]}]
 
-const func = async () => {
-  const task = await prisma.child.update({
-    where: {
-      id: "e9379078-b832-4597-83d1-e397f651da7c",
-    },
-    data: {
-      completedCognitiveOnChild: {
-        create: {
-          cognitiveTaskId: 2,
-        },
-      },
-    },
-  });
+const data = new Uint8Array([
+  137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0,
+  0, 8, 0, 0, 0, 8, 8, 2, 0, 0, 0, 75, 109, 41, 220, 0, 0, 0, 34, 73,
+  68, 65, 84, 8, 215, 99, 120, 173, 168, 135, 21, 49, 0, 241, 255, 15,
+  90, 104, 8, 33, 129, 83, 7, 97, 163, 136, 214, 129, 93, 2, 43, 2, 0,
+  181, 31, 90, 179, 225, 252, 176, 37, 0, 0, 0, 0, 73, 69, 78, 68,
+  174, 66, 96, 130,
+]);
+const blob: Blob | MediaSource = new Blob([data], { type: "image/png" });
+// const url = URL.createObjectURL(blob);
+// const img = new Image();
 
-  console.log(task);
-};
-
-func().then(() => {
-  //
-});
+console.log(blob);

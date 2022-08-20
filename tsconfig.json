@@ -11,7 +11,7 @@
     "removeComments": true,
     "sourceMap": true
   },
-  "include": ["./src/**/*.ts", "tests/index.test.ts"],
+  "include": ["./src/**/*.ts", "tests/index.test.ts", "src/seeds/cognitive.seed.js"],
   "exclude": [
     "./node_modules",
     "tests",
