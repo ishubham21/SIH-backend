@@ -30,6 +30,28 @@ class ParentController {
             });
             return schema.validate(childData);
         };
+        this.getParentById = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const id = req.params["id"];
+            if (!id) {
+                return res.status(403).json({
+                    error: "Please pass in parent id - /parent/data/:id",
+                    data: null,
+                });
+            }
+            try {
+                const parent = yield this.parentService.getParentById(id);
+                return res.status(200).json({
+                    error: null,
+                    data: Object.assign({}, parent),
+                });
+            }
+            catch (error) {
+                res.status(400).json({
+                    error,
+                    data: null,
+                });
+            }
+        });
         this.addChild = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const childRegister = req.body;
             const validationError = this.validateChildData(childRegister).error;

@@ -1,5 +1,8 @@
 import Joi, { ValidationError } from "joi";
-import { ChildRegister } from "../../interfaces";
+import {
+  ChildRegister,
+  ParentWithoutPassword,
+} from "../../interfaces";
 import ParentService from "../../services/parent/index.service";
 import { Request, Response } from "express";
 import ChildService from "../../services/child/index.service";
@@ -40,9 +43,8 @@ class ParentController {
     }
 
     try {
-      const parent: Parent = await this.parentService.getParentById(
-        id,
-      );
+      const parent: ParentWithoutPassword =
+        await this.parentService.getParentById(id);
       return res.status(200).json({
         error: null,
         data: {

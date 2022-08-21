@@ -158,6 +158,7 @@ class ChildController {
             if (!id) {
                 return res.status(403).json({
                     error: "Please pass in child id",
+                    data: null
                 });
             }
             try {

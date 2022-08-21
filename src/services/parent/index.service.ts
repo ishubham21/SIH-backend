@@ -1,4 +1,5 @@
 import { Parent, PrismaClient } from "@prisma/client";
+import { ParentWithoutPassword } from "../../interfaces";
 
 class ParentService {
   private parent;
@@ -8,7 +9,7 @@ class ParentService {
   }
 
   public getParentById = (id: string) => {
-    return new Promise<Parent>((resolve, reject) => {
+    return new Promise<ParentWithoutPassword>((resolve, reject) => {
       this.parent
         .findUnique({
           where: {
@@ -55,7 +56,11 @@ class ParentService {
           if (!parentData) {
             return reject("No parent with this ID could be found");
           }
-          return resolve(parentData);
+          // eslint-disable-next-line prefer-const
+          let { password, ...parentWithoutPassword } = parentData;
+          password = "";
+
+          return resolve(parentWithoutPassword);
         })
         .catch(() => {
           return reject({
