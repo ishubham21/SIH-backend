@@ -26,6 +26,24 @@ class ParentRoute {
       });
     });
 
+    this.router.get(
+      `${this.path}data`,
+      (req: Request, res: Response) => {
+        return res.status(403).json({
+          error:
+            "Please pass in parent id - /parent/data/some-parent-id",
+          data: null,
+        });
+      },
+    );
+
+    this.router.get(
+      `${this.path}data/:id`,
+      (req: Request, res: Response) => {
+        this.parentController.getParentById(req, res);
+      },
+    );
+
     this.router.post(
       `${this.path}add-child`,
       (req: Request, res: Response) => {

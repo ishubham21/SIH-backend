@@ -3,6 +3,7 @@ import { ChildRegister } from "../../interfaces";
 import ParentService from "../../services/parent/index.service";
 import { Request, Response } from "express";
 import ChildService from "../../services/child/index.service";
+import { Parent } from "@prisma/client";
 
 class ParentController {
   private parentService;
@@ -26,6 +27,34 @@ class ParentController {
     });
 
     return schema.validate(childData);
+  };
+
+  public getParentById = async (req: Request, res: Response) => {
+    const id = req.params["id"];
+
+    if (!id) {
+      return res.status(403).json({
+        error: "Please pass in parent id - /parent/data/:id",
+        data: null,
+      });
+    }
+
+    try {
+      const parent: Parent = await this.parentService.getParentById(
+        id,
+      );
+      return res.status(200).json({
+        error: null,
+        data: {
+          ...parent,
+        },
+      });
+    } catch (error) {
+      res.status(400).json({
+        error,
+        data: null,
+      });
+    }
   };
 
   public addChild = async (req: Request, res: Response) => {
