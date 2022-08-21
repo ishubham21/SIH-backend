@@ -80,7 +80,7 @@ class ChildService {
                     .catch((error) => reject(error));
             });
         });
-        this.completeCognitive = (childId, cognitiveTaskId) => {
+        this.completeCognitive = (childId, cognitiveTaskId, score) => {
             return new Promise((resolve, reject) => {
                 this.prisma
                     .$transaction([
@@ -97,7 +97,7 @@ class ChildService {
                             id: childId,
                         },
                         data: {
-                            coins: { increment: 10 },
+                            coins: { increment: score },
                             completedCognitiveOnChild: {
                                 create: {
                                     cognitiveTaskId,

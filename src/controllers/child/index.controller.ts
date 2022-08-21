@@ -4,7 +4,11 @@ import { Child } from "@prisma/client";
 import TaskService from "../../services/task/index.service";
 import YogaService from "../../services/yoga/index.service";
 import Joi, { ValidationError } from "joi";
-import { CognitiveRequest, YogaRequest } from "../../interfaces";
+import {
+  CognitiveRequest,
+  CompleteCognitiveRequest,
+  YogaRequest,
+} from "../../interfaces";
 
 class ChildController {
   private childService;
@@ -23,6 +27,19 @@ class ChildController {
     const schema = Joi.object({
       childId: Joi.string().required(),
       cognitiveTaskId: Joi.required(),
+    });
+
+    return schema.validate(requestBody);
+  };
+
+  private verifyCompleteCognitiveRequest = (
+    requestBody: CompleteCognitiveRequest,
+  ) => {
+    //78bb2bc1-011f-4774-bf63-6efbfdea5bc5
+    const schema = Joi.object({
+      childId: Joi.string().required(),
+      cognitiveTaskId: Joi.required(),
+      score: Joi.required(),
     });
 
     return schema.validate(requestBody);
@@ -133,7 +150,6 @@ class ChildController {
             status: "Completion successful",
           },
         });
-        
       } catch (error) {
         return res.status(400).json({
           error,
@@ -150,10 +166,10 @@ class ChildController {
   };
 
   public completeCognitive = async (req: Request, res: Response) => {
-    const { childId, cognitiveTaskId } = req.body;
+    const { childId, cognitiveTaskId, score } = req.body;
 
     const validationError: ValidationError | null | undefined =
-      this.verifyCognitiveRequests(req.body).error;
+      this.verifyCompleteCognitiveRequest(req.body).error;
 
     if (!validationError) {
       //search if child and task are present or not
@@ -168,6 +184,7 @@ class ChildController {
         const task = await this.childService.completeCognitive(
           childId,
           cognitiveTaskId,
+          score,
         );
 
         return res.status(200).json({
@@ -199,7 +216,7 @@ class ChildController {
     if (!id) {
       return res.status(403).json({
         error: "Please pass in child id",
-        data: null
+        data: null,
       });
     }
 

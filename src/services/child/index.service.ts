@@ -100,6 +100,7 @@ class ChildService {
   public completeCognitive = (
     childId: string,
     cognitiveTaskId: number,
+    score: number,
   ) => {
     //if completed, add coins and update
     return new Promise<assignedCognitiveOnChild>(
@@ -120,7 +121,7 @@ class ChildService {
                 id: childId,
               },
               data: {
-                coins: { increment: 10 },
+                coins: { increment: score },
                 completedCognitiveOnChild: {
                   create: {
                     cognitiveTaskId,

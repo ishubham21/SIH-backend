@@ -25,6 +25,14 @@ class ChildController {
             });
             return schema.validate(requestBody);
         };
+        this.verifyCompleteCognitiveRequest = (requestBody) => {
+            const schema = joi_1.default.object({
+                childId: joi_1.default.string().required(),
+                cognitiveTaskId: joi_1.default.required(),
+                score: joi_1.default.required(),
+            });
+            return schema.validate(requestBody);
+        };
         this.verifyYogaRequests = (requestBody) => {
             const schema = joi_1.default.object({
                 childId: joi_1.default.string().required(),
@@ -123,14 +131,14 @@ class ChildController {
             }
         });
         this.completeCognitive = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { childId, cognitiveTaskId } = req.body;
-            const validationError = this.verifyCognitiveRequests(req.body).error;
+            const { childId, cognitiveTaskId, score } = req.body;
+            const validationError = this.verifyCompleteCognitiveRequest(req.body).error;
             if (!validationError) {
                 try {
                     yield this.childService.getChildById(childId);
                     yield this.taskService.getCognitiveTaskById(cognitiveTaskId);
                     yield this.taskService.getAssignedCognitiveTask(childId, cognitiveTaskId);
-                    const task = yield this.childService.completeCognitive(childId, cognitiveTaskId);
+                    const task = yield this.childService.completeCognitive(childId, cognitiveTaskId, score);
                     return res.status(200).json({
                         error: null,
                         data: {
@@ -158,7 +166,7 @@ class ChildController {
             if (!id) {
                 return res.status(403).json({
                     error: "Please pass in child id",
-                    data: null
+                    data: null,
                 });
             }
             try {

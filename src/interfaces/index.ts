@@ -10,12 +10,12 @@ export interface CognitiveRequest {
 
 export interface YogaRequest {
   childId: string;
-  yogaId: string;
+  yogaId: number;
 }
 
-export interface Cogn {
+export interface CompleteCognitiveRequest {
   childId: string;
-  taskId: string;
+  taskId: number;
 }
 
 export * from "./child.interface";
