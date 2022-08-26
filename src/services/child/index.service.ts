@@ -349,9 +349,13 @@ class ChildService {
 
                   //filtering out the socres of children
                   const childScores = data.map(
-                    (completedCognitiveTask: any): ChildScores => {
+                    (completedCognitiveTask: any) => {
                       return {
                         score: completedCognitiveTask.score,
+                        totalQuestions:
+                          completedCognitiveTask.totalQuestions,
+                        correctQuestions:
+                          completedCognitiveTask.correctQuestions,
                         childId: completedCognitiveTask.childId,
                         cognitiveTaskId:
                           completedCognitiveTask.cognitiveTaskId,
