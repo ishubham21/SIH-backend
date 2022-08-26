@@ -4,18 +4,19 @@ import {
   availableCognitiveOnChild,
   Child,
   CognitiveTask,
+  completedCognitiveOnChild,
   Prisma,
   PrismaClient,
   Yoga,
 } from "@prisma/client";
-import { ChildRegister } from "../../interfaces";
+import { ChildRegister, ChildScores } from "../../interfaces";
 import ParentService from "../parent/index.service";
 
 class ChildService {
   private prisma: any;
   private parentService;
 
-  constructor() {
+  constructor () {
     this.parentService = new ParentService();
     this.prisma = new PrismaClient();
   }
@@ -101,6 +102,8 @@ class ChildService {
     childId: string,
     cognitiveTaskId: number,
     score: number,
+    correctQuestions: number,
+    totalQuestions: number,
   ) => {
     //if completed, add coins and update
     return new Promise<assignedCognitiveOnChild>(
@@ -125,6 +128,9 @@ class ChildService {
                 completedCognitiveOnChild: {
                   create: {
                     cognitiveTaskId,
+                    score,
+                    correctQuestions,
+                    totalQuestions,
                   },
                 },
               },
@@ -243,11 +249,9 @@ class ChildService {
           if (!foundParent) {
             return reject("Parent ID is incorrect");
           } else {
-            //add child only if parent is found else the child would be lost in the DB
             try {
               const { id } = await this.prisma.child.create({
                 data,
-                //we can connect here too - directly creating values in availableCognitiveOnChild/Yoga - see many-to-many relationships
               });
 
               //do not perform this action for toddlers
@@ -281,6 +285,7 @@ class ChildService {
               const availableYogaId = yogas.map(
                 (yoga: Yoga) => yoga.id,
               );
+
               const createYoga = availableYogaId.map((id: string) => {
                 return { yogaId: id };
               });
@@ -302,8 +307,6 @@ class ChildService {
 
               return resolve(child.id);
             } catch (error) {
-              console.log(error);
-
               return reject({
                 error,
                 origin: "While trying to add child",
@@ -311,9 +314,96 @@ class ChildService {
             }
           }
         })
-        .catch((err) => {
+        .catch(err => {
           return reject(err);
         });
+    });
+  };
+
+  public getStatsForChild = (id: string) => {
+    return new Promise<any[]>((resolve, reject) => {
+      try {
+        this.prisma.completedCognitiveOnChild
+          .findMany({
+            where: {
+              childId: id,
+            },
+          })
+          .then((allTasks: completedCognitiveOnChild[]) => {
+            const percentileArray: any = [];
+
+            //mapping out the same tasks for performance
+            return allTasks.map(async task => {
+              this.prisma.completedCognitiveOnChild
+                .findMany({
+                  where: {
+                    cognitiveTaskId: task.cognitiveTaskId,
+                  },
+                  include: {
+                    child: true,
+                    task: true,
+                  },
+                })
+                .then((data: any) => {
+                  console.log(data);
+
+                  //filtering out the socres of children
+                  const childScores = data.map(
+                    (completedCognitiveTask: any): ChildScores => {
+                      return {
+                        score: completedCognitiveTask.score,
+                        childId: completedCognitiveTask.childId,
+                        cognitiveTaskId:
+                          completedCognitiveTask.cognitiveTaskId,
+                        ageGroup:
+                          completedCognitiveTask.child?.ageGroup,
+                        taskName: completedCognitiveTask.task.name,
+                      };
+                    },
+                  );
+
+                  //sort the array in the ascending order of scores
+                  childScores.sort(
+                    (a: ChildScores, b: ChildScores) => {
+                      return a.score - b.score;
+                    },
+                  );
+
+                  let percentile: number;
+                  childScores.forEach((child: any, index: number) => {
+                    if (child.childId == id) {
+                      percentile =
+                        ((index + 1) / childScores.length) * 100;
+                      childScores[index]["percentile"] = percentile;
+                    }
+                  });
+
+                  const allStats = childScores.filter(
+                    (child: any) => child.childId === id,
+                  );
+
+                  return allStats;
+                })
+                .then((data: any) => {
+                  percentileArray.push(data);
+
+                  if (percentileArray.length == allTasks.length)
+                    return resolve(percentileArray.flat());
+                })
+                .catch((error: any) => {
+                  return reject(error);
+                });
+            });
+          })
+          .catch((error: any) => {
+            return reject(error);
+          });
+      } catch (error) {
+        return reject({
+          error,
+          occurance: "While getting cognitive tasks for child",
+        });
+      }
     });
   };
 }

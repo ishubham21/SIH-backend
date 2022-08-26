@@ -41,6 +41,13 @@ class ChildRoute {
         this.childController.completeYoga(req, res);
       },
     );
+
+    this.router.get(
+      `${this.path}stats/:id`,
+      (req: Request, res: Response) => {
+        this.childController.getStatsForChild(req, res);
+      },
+    );
   };
 }
 

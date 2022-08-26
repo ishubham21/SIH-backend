@@ -73,6 +73,9 @@ CREATE TABLE "assignedCognitiveOnChild" (
 -- CreateTable
 CREATE TABLE "completedCognitiveOnChild" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "score" INTEGER NOT NULL,
+    "totalQuestions" INTEGER NOT NULL,
+    "correctQuestions" INTEGER NOT NULL,
     "childId" TEXT NOT NULL,
     "cognitiveTaskId" INTEGER NOT NULL,
 

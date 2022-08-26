@@ -16,40 +16,7 @@ class ParentService {
             id,
           },
           include: {
-            children: {
-              include: {
-                assignedCognitiveOnChild: {
-                  include: {
-                    task: true,
-                  },
-                },
-                assignedYogaOnChild: {
-                  include: {
-                    yoga: true,
-                  },
-                },
-                availableCognitiveOnChild: {
-                  include: {
-                    task: true,
-                  },
-                },
-                availableYogaOnChild: {
-                  include: {
-                    yoga: true,
-                  },
-                },
-                completedCognitiveOnChild: {
-                  include: {
-                    task: true,
-                  },
-                },
-                completedYogaOnChild: {
-                  include: {
-                    yoga: true,
-                  },
-                },
-              },
-            },
+            children: true,
           },
         })
         .then((parentData: Parent | null) => {

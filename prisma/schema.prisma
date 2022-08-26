@@ -95,7 +95,10 @@ model assignedCognitiveOnChild {
 }
 
 model completedCognitiveOnChild {
-  createdAt DateTime @default(now())
+  createdAt        DateTime @default(now())
+  score            Int
+  totalQuestions   Int
+  correctQuestions Int
 
   child   Child  @relation(fields: [childId], references: [id])
   childId String

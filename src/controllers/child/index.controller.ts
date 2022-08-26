@@ -15,7 +15,7 @@ class ChildController {
   private yogaService;
   private taskService;
 
-  constructor() {
+  constructor () {
     this.childService = new ChildService();
     this.taskService = new TaskService();
     this.yogaService = new YogaService();
@@ -40,6 +40,8 @@ class ChildController {
       childId: Joi.string().required(),
       cognitiveTaskId: Joi.required(),
       score: Joi.required(),
+      totalQuestions: Joi.required(),
+      correctQuestions: Joi.required(),
     });
 
     return schema.validate(requestBody);
@@ -57,8 +59,10 @@ class ChildController {
   public assignYoga = async (req: Request, res: Response) => {
     const { childId, yogaId } = req.body;
 
-    const validationError: ValidationError | null | undefined =
-      this.verifyYogaRequests(req.body).error;
+    const validationError:
+      | ValidationError
+      | null
+      | undefined = this.verifyYogaRequests(req.body).error;
 
     if (!validationError) {
       try {
@@ -95,8 +99,10 @@ class ChildController {
   public assignCognitive = async (req: Request, res: Response) => {
     const { childId, cognitiveTaskId } = req.body;
 
-    const validationError: ValidationError | null | undefined =
-      this.verifyCognitiveRequests(req.body).error;
+    const validationError:
+      | ValidationError
+      | null
+      | undefined = this.verifyCognitiveRequests(req.body).error;
 
     if (!validationError) {
       try {
@@ -133,8 +139,10 @@ class ChildController {
   public completeYoga = async (req: Request, res: Response) => {
     const { childId, yogaId } = req.body;
 
-    const validationError: ValidationError | null | undefined =
-      this.verifyYogaRequests(req.body).error;
+    const validationError:
+      | ValidationError
+      | null
+      | undefined = this.verifyYogaRequests(req.body).error;
 
     if (!validationError) {
       try {
@@ -166,10 +174,19 @@ class ChildController {
   };
 
   public completeCognitive = async (req: Request, res: Response) => {
-    const { childId, cognitiveTaskId, score } = req.body;
+    const {
+      childId,
+      cognitiveTaskId,
+      score,
+      correctQuestions,
+      totalQuestions,
+    } = req.body;
 
-    const validationError: ValidationError | null | undefined =
-      this.verifyCompleteCognitiveRequest(req.body).error;
+    const validationError:
+      | ValidationError
+      | null
+      | undefined = this.verifyCompleteCognitiveRequest(req.body)
+      .error;
 
     if (!validationError) {
       //search if child and task are present or not
@@ -185,6 +202,8 @@ class ChildController {
           childId,
           cognitiveTaskId,
           score,
+          correctQuestions,
+          totalQuestions,
         );
 
         return res.status(200).json({
@@ -234,6 +253,31 @@ class ChildController {
       res.status(400).json({
         error,
         data: null,
+      });
+    }
+  };
+
+  public getStatsForChild = async (req: Request, res: Response) => {
+    const id = req.params["id"];
+
+    if (!id) {
+      return res.status(403).json({
+        error: "Please pass in a childId",
+        data: null,
+      });
+    }
+
+    try {
+      await this.childService.getChildById(id);
+      const tasks = await this.childService.getStatsForChild(id);
+      // console.log(tasks);
+
+      res.status(200).json({
+        tasks,
+      });
+    } catch (error) {
+      res.status(503).json({
+        error,
       });
     }
   };
