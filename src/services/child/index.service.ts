@@ -362,6 +362,7 @@ class ChildService {
                         ageGroup:
                           completedCognitiveTask.child?.ageGroup,
                         taskName: completedCognitiveTask.task.name,
+                        noOfParticipants: allTasks.length,
                       };
                     },
                   );
