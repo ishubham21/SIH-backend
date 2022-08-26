@@ -1,7 +1,8 @@
+![sumedha white](https://user-images.githubusercontent.com/87890532/186890755-f650d53d-f99c-4c8d-b90f-d313dadd58eb.png)
 
-# Sumedha
-### Celestial Bytes
-The application aims to solve the lack of holistic development among kids, which is currently affecting over 52 lakh children in India. We help parents to unite with their children and push them towards their maximum potential. We aim at doing this by combining the future of the world and the heritage of India, which is AI and Yoga. Along with that, Sumedha also provides children with incisive  modules, which help them in the area of cognitive development.
+## Celestial Bytes
+The application aims to solve the lack of
+ holistic development among kids, which is currently affecting over 52 lakh children in India. We help parents to unite with their children and push them towards their maximum potential. We aim at doing this by combining the future of the world and the heritage of India, which is AI and Yoga. Along with that, Sumedha also provides children with incisive  modules, which help them in the area of cognitive development.
 
 ## Our Solution
 The team has created a PWA that helps parents with aiding and tracking the holistic growth of their children. This contains 2 different platforms, one to be handled by parents and the other to be accessed by kids but to be created by parents themselves.
