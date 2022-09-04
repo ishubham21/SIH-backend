@@ -40,6 +40,9 @@ time, and maintaining an admin dashboard.
 * **Developer Tooling** - ESLint, Prettier
 * **Automated Testing** - Jest
 
+## Postman collection
+https://www.postman.com/dark-resonance-160564/workspace/demo/collection/13812176-46370c5d-ff5a-4c0c-a8cf-312277950d69?action=share&creator=13812176
+
 ### Workflow
 ![Screenshot from 2022-09-04 10-24-00](https://user-images.githubusercontent.com/34435822/188298113-ef52dfcf-ddb8-4db3-9d4d-e965745524ca.png)
 
